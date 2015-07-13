@@ -38,6 +38,14 @@ module LogStashLogger
         opts = parsed_uri_opts
       end
 
+      if toke = opts[:toke]
+        config = LogStashLogger.configure do |config|
+          config.customize_event do |event|
+            event["toke"] = toke
+          end
+        end
+      end
+      
       type = opts.delete(:type) || DEFAULT_TYPE
 
       device_klass_for(type).new(opts)
