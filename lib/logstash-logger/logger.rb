@@ -33,6 +33,13 @@ module LogStashLogger
 
     if args.length > 1
       if args.all?{|arg| arg.is_a?(Hash)}
+        if token = arg[:token]
+          config = self.configure do |config|
+            config.customize_event do |event|
+              event["token"] = token
+            end
+          end
+        end
         # Array of Hashes
         args
       else
