@@ -6,6 +6,14 @@ module LogStashLogger
     opts = extract_opts(*args)
     device = Device.new(opts)
 
+    if token = opts[:token]
+      config = self.configure do |config|
+        config.customize_event do |event|
+          event["token"] = token
+        end
+      end
+    end
+
     ::Logger.new(device).tap do |logger|
       logger.instance_variable_set(:@device, device)
       logger.extend(self)
@@ -33,13 +41,6 @@ module LogStashLogger
 
     if args.length > 1
       if args.all?{|arg| arg.is_a?(Hash)}
-        if token = arg[:token]
-          config = self.configure do |config|
-            config.customize_event do |event|
-              event["token"] = token
-            end
-          end
-        end
         # Array of Hashes
         args
       else
